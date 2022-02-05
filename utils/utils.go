@@ -72,3 +72,20 @@ func CalcHash(header *wire.BlockHeader) []byte {
 		return nil
 	*/
 }
+
+func Bitcount(input []byte) uint32 {
+
+	var res uint32 = 0
+
+	for i := 0; i < len(input); i++ {
+		b := input[i]
+		for j := 0; j < 8; j++ {
+			mask := uint8(1 << j)
+			val := uint32(b&mask) >> j
+
+			res += val
+		}
+	}
+
+	return res
+}

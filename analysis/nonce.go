@@ -1,4 +1,4 @@
-package nonce
+package analysis
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 	"github.com/btcsuite/btcd/rpcclient"
 )
 
-func Analyze(config *utils.Config, client *rpcclient.Client, blockCount int64) {
+func AnalyzeNonce(config *utils.Config, client *rpcclient.Client, blockCount int64) {
 
 	log.Printf("[nonce] starting.")
 
@@ -41,7 +41,7 @@ func Analyze(config *utils.Config, client *rpcclient.Client, blockCount int64) {
 		var nonce_le uint32 = b.Nonce
 		var nonce_be uint32 = utils.SwapEndianess(b.Nonce)
 
-		f_nonce_le.WriteString(fmt.Sprintf("%d %d\r\n", int(i)+1, nonce_le))
-		f_nonce_be.WriteString(fmt.Sprintf("%d %d\r\n", int(i)+1, nonce_be))
+		f_nonce_le.WriteString(fmt.Sprintf("%d %d\n", int(startBlock)+i, nonce_le))
+		f_nonce_be.WriteString(fmt.Sprintf("%d %d\n", int(startBlock)+i, nonce_be))
 	}
 }

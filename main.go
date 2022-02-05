@@ -16,7 +16,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/amather/btcd-analysis/nonce"
+	"github.com/amather/btcd-analysis/analysis"
 	"github.com/amather/btcd-analysis/utils"
 	"github.com/btcsuite/btcd/rpcclient"
 	"github.com/btcsuite/btcd/wire"
@@ -305,7 +305,11 @@ func main() {
 	}
 	log.Printf("[main] current block height: %d", blockCount-1)
 
-	nonce.Analyze(cfg, client, blockCount)
+	//analysis.AnalyzeNonce(cfg, client, blockCount)
+	//analysis.AnalyzeHashDist(cfg, client, blockCount)
+	//analysis.AnalyzeBitsumHash(cfg, client, blockCount)
+	//analysis.AnalyzeBitcountHash(cfg, client, blockCount)
+	analysis.AnalyzeBitcountHeader(cfg, client, blockCount)
 
 	//writeNonce(client)
 
