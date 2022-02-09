@@ -14,7 +14,7 @@ func AnalyzeBitcountHeader(config *utils.Config, client *rpcclient.Client, block
 
 	log.Printf("[bitcount_header] starting.")
 
-	var startBlock int64 = 600_000
+	var startBlock int64 = 200_000
 	blks, err := client.GetBlockHeaderRange(startBlock, blockCount)
 	if err != nil {
 		panic(err)
@@ -26,6 +26,10 @@ func AnalyzeBitcountHeader(config *utils.Config, client *rpcclient.Client, block
 	}
 	defer f_bitcount_header.Close()
 
+	maSize := 100
+	ma := utils.MovingAverage{}
+	ma.Init(maSize)
+
 	for i, b := range blks {
 
 		if i%10_000 == 0 {
@@ -33,6 +37,23 @@ func AnalyzeBitcountHeader(config *utils.Config, client *rpcclient.Client, block
 		}
 
 		bitCount := utils.Bitcount(utils.GetHeaderSlice(b))
-		f_bitcount_header.WriteString(fmt.Sprintf("%d %d\n", int(startBlock)+i, bitCount))
+
+		ma.Add(int(bitCount))
+		ma.Next()
+
+		maMean := 0
+		maLower := 0
+		maUpper := 0
+		if i >= maSize {
+			state := ma.State()
+			maMean = int(state.Mean)
+			maLower = int(state.Mean - state.StdDev)
+			maUpper = int(state.Mean + state.StdDev)
+		}
+		//version := (b.Version & 0x1fffe000)
+		version := (uint32(b.Version) & uint32(0x1ffe000)) >> 13
+		//version := (uint32(b.Version) & uint32(0xe0001fff))
+
+		f_bitcount_header.WriteString(fmt.Sprintf("%d %d %d %d %d %x\n", int(startBlock)+i, bitCount, maMean, maLower, maUpper, version))
 	}
 }
