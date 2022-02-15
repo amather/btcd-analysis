@@ -12,20 +12,30 @@ print inputfile, " --> ", outputfile
 
 set border lc "yellow"
 set yrange [0:30]
-#set ytics 0, 500
-#set mytics 2
-set xtics 0, 32, 680 tc "yellow" 
+set y2range [0:30]
+#set y2range [0:4]
+set xtics 0, 16, 680 tc "yellow" 
 
-#set boxwidth 0.05 relative
-#set boxwidth 0.1 absolute
-#set boxwidth -2
+set grid xtics
+
+
+#set style rect fc lt -1 fs solid 0.15 noborder
+#set style rect back fc rgb "#ff0000" fs solid 0.15 noborder
+set obj rect from 0, graph 0 to 32, graph 1 behind fc rgb "#404040" fs solid noborder 
+set obj rect from 32, graph 0 to 288, graph 1 behind fc rgb "#606060" fs solid noborder 
+set obj rect from 288, graph 0 to 544, graph 1 behind fc rgb "#404040" fs solid noborder 
+set obj rect from 544, graph 0 to 576, graph 1 behind fc rgb "#606060" fs solid noborder 
+set obj rect from 576, graph 0 to 608, graph 1 behind fc rgb "#404040" fs solid noborder 
+set obj rect from 608, graph 0 to 640, graph 1 behind fc rgb "#606060" fs solid noborder 
+
+
 set style fill solid 1.0 noborder 
-#set style fill solid 0.5 noborder 
 
-#set arrow from graph 0,0.5 to graph 1,0.5 nohead lt rgb "blue" 
+#plot inputfile using 1:3 with points pointtype 1 lc rgb "#ff0000" axis x1y2, \
+#     inputfile using 1:2 with points pointtype 1 lc rgb "#00aa00"
+plot inputfile using 1:2 with points pointtype 5 lc rgb "#00aa00",\
+     inputfile using 1:3 with points pointtype 13 lc rgb "#ff0000" axis x1y2
 
-#plot inputfile using 2 with boxes lc rgb "#00aa00"
-plot inputfile using 1:2 with points pointtype 1 lc rgb "#00aa00"
 
 
 # https://edg.uchicago.edu/tutorials/pretty_plots_with_gnuplot/

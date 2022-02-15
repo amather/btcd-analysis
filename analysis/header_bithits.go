@@ -70,9 +70,10 @@ func AnalyzeHeaderBitHits(config *utils.Config, client *rpcclient.Client, blockC
 				for _, ib := range pr.InputBits {
 					pos := ib.InputPos
 					hits := ib.Hits
+					val := ib.Value
 
 					f := files_be[i]
-					f.WriteString(fmt.Sprintf("%d %d\n", pos, hits))
+					f.WriteString(fmt.Sprintf("%d %d %d\n", pos, hits, int32(val)*hits))
 				}
 
 				arch.ParseBit(bit, 0, pr, true)
