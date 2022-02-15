@@ -13,7 +13,8 @@ set border lc "yellow"
 set xtics tc "yellow"
 
 
-set yrange [0:4294967296]
+#set yrange [0:4294967296]
+
 # 1073741824 == 2^32/4
 #set ytics 0, 1073741824
 # 536870912 == 2^32/8

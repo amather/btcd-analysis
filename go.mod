@@ -3,10 +3,12 @@ module github.com/amather/btcd-analysis
 go 1.17
 
 replace github.com/btcsuite/btcd => ../btcd
+replace github.com/amather/shanalyzer => ../shanalyzer
 
 require (
 	github.com/btcsuite/btcd v0.20.1-beta
 	github.com/btcsuite/btcutil v1.0.3-0.20201208143702-a53e38424cce
+	github.com/amather/shanalyzer v0.0.0-ignore
 )
 
 require (

@@ -95,7 +95,8 @@ func main() {
 	//analysis.AnalyzeBitsumHash(cfg, client, blockCount)
 	//analysis.AnalyzeBitcountHash(cfg, client, blockCount)
 	//analysis.AnalyzeBitcountHeader(cfg, client, blockCount)
-	analysis.AnalyzeSHAValues(cfg, client, blockCount)
+	//analysis.AnalyzeSHAValues(cfg, client, blockCount)
+	analysis.AnalyzeHeaderBitHits(cfg, client, blockCount)
 
 	//writeNonce(client)
 

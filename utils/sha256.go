@@ -53,18 +53,29 @@ func sig0(x uint32) uint32 {
 	return (rotr(x, 7) ^ rotr(x, 18) ^ ((x) >> 3))
 }
 func sig1(x uint32) uint32 {
+	/*
+		r1 := rotr(x, 17)
+		r2 := rotr(x, 19)
+		r3 := x >> 10
+		x1 := r1 ^ r2
+		x2 := x1 ^ r3
+		return x2
+	*/
 	return (rotr(x, 17) ^ rotr(x, 19) ^ ((x) >> 10))
 }
 
 type Asha256Result struct {
-	AValues [64]uint32
-	BValues [64]uint32
-	CValues [64]uint32
-	DValues [64]uint32
-	EValues [64]uint32
-	FValues [64]uint32
-	GValues [64]uint32
-	HValues [64]uint32
+	AValues  [64]uint32
+	BValues  [64]uint32
+	CValues  [64]uint32
+	DValues  [64]uint32
+	EValues  [64]uint32
+	FValues  [64]uint32
+	GValues  [64]uint32
+	HValues  [64]uint32
+	T1Values [64]uint32
+	T2Values [64]uint32
+	KWValues [64]uint32
 }
 
 func (res *Asha256Result) update(i int, a uint32, b uint32, c uint32, d uint32, e uint32, f uint32, g uint32, h uint32) {
@@ -76,6 +87,25 @@ func (res *Asha256Result) update(i int, a uint32, b uint32, c uint32, d uint32, 
 	res.FValues[i] = f
 	res.GValues[i] = g
 	res.HValues[i] = h
+
+	/*
+		res.AValues[i] = SwapEndianess(res.AValues[i])
+		res.BValues[i] = SwapEndianess(res.BValues[i])
+		res.CValues[i] = SwapEndianess(res.CValues[i])
+		res.DValues[i] = SwapEndianess(res.DValues[i])
+		res.EValues[i] = SwapEndianess(res.EValues[i])
+		res.FValues[i] = SwapEndianess(res.FValues[i])
+		res.GValues[i] = SwapEndianess(res.GValues[i])
+		res.HValues[i] = SwapEndianess(res.HValues[i])
+	*/
+	res.AValues[i] = SwapEndianess(a)
+	res.BValues[i] = SwapEndianess(b)
+	res.CValues[i] = SwapEndianess(c)
+	res.DValues[i] = SwapEndianess(d)
+	res.EValues[i] = SwapEndianess(e)
+	res.FValues[i] = SwapEndianess(f)
+	res.GValues[i] = SwapEndianess(g)
+	res.HValues[i] = SwapEndianess(h)
 }
 
 type Asha256 struct {
@@ -111,8 +141,6 @@ func (ctx *Asha256) transform() {
 
 	for i := 0; i < 64; i++ {
 
-		ctx.result.update(i, a, b, c, d, e, f, g, h)
-
 		t1 = h + ep1(e) + ch(e, f, g) + k[i] + m[i]
 		t2 = ep0(a) + maj(a, b, c)
 		h = g
@@ -123,6 +151,12 @@ func (ctx *Asha256) transform() {
 		c = b
 		b = a
 		a = t1 + t2
+
+		ctx.result.T1Values[i] = t1
+		ctx.result.T2Values[i] = t2
+		ctx.result.KWValues[i] = SwapEndianess(k[i] + m[i])
+		ctx.result.update(i, a, b, c, d, e, f, g, h)
+
 	}
 
 	ctx.state[0] += a
@@ -211,6 +245,11 @@ func CalcHashCustom(header *wire.BlockHeader) ([]byte, *Asha256Result) {
 
 	hdr := GetHeaderSlice(header)
 	final := make([]byte, 32)
+
+	testHash := &Asha256{}
+	testHash.Init()
+	testBytes := make([]byte, 32)
+	testHash.Final(&testBytes)
 
 	firstHash := &Asha256{}
 	firstHash.Init()
